@@ -57,6 +57,9 @@
  *	...
  */
 
+#ifndef TEMPS_USE_DS18B20
+#define TEMPS_USE_DS18B20
+#endif
 
 /*
  * Register new DallasTemperature object to management sensors
