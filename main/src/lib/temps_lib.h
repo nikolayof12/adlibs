@@ -1,0 +1,131 @@
+#ifndef TEMPS_LIB_H
+#define TEMPS_LIB_H
+
+#include <stdint.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+/*	Overview:
+ *
+ *	Library for management temperature sensors, in control about every sensor:
+ *	struct temp_sensor:
+ *		*obj		ptr to DallasTemperature class that control this sensor
+ *		addr		address of this sensor
+ *		type		special (12 bit) or simple (9 bit)
+ *		cur_temp	current temp, updating default in background TODO func
+ *		prev_temp	previous temp, updating with every chage cur_temp:
+ *					so, cur_temp will be as prev_temp, new val -> in cur_temp
+ *		tar_temp	just value to comparing
+ *		changes_timer	TODO
+ *		errors		if some errors in the read/cmp/other proccess, it's will be > 0
+ *		_read_timer	internal timer to between request temps
+ *
+ *	struct temps_service:
+ *		simple_sensors		array of simple sensors
+ *		simple_sensors_count	length of simple_sensors array
+ *		spec_sensors		array of special sensors
+ *		spec_sensors_count	length of spec_sensors array
+ *		
+ *
+ *	You must define:
+ *		#define TEMPS_USE_DS18B20
+ *
+ *
+ *	Usage:
+ *
+ *
+ *	#define CNT_SPEC_SENSORS 2
+ *	#define CNT_SIMPLE_SENSORS 3
+ *
+ *	// here register DallasTemperature objects
+ *	TEMPS_REGISTER_SPEC_SENSOR(warn_sensor, 8);	// in 8 pin
+ *	TEMPS_REGISTER_SPEC_SENSOR(top_sensor, 9);	// in 9 pin
+ *	TEMPS_REGISTER_SIMPLE_SENSORS(def_sensors, 10);	// in 10 pin
+ *
+ *	// just arrays, without set OneWire/DallasTemperature
+ *	TEMPS_REGISTER_ARR(simple_sns_arr, CNT_SIMPLE_SENSORS);
+ *	TEMPS_REGISTER_ARR(special_sns_arr, CNT_SPEC_SENSORS);
+ *
+ *	static struct temps_service temps;
+ *	temps.simple_sensors = simple_sns_arr;
+ *	temps.simple_sensors_count = CNT_SIMPLE_SENSORS;
+ *	temps.spec_sensors = special_sns_arr;
+ *	temps.spec_sensors_count = CNT_SPEC_SENSORS;
+ *
+ *	temps.simple_sensors[0].type = simple;
+ *	temps.spec_sensors[0].type = special;
+ *	...
+ */
+
+
+/*
+ * Register new DallasTemperature object to management sensors
+ *
+ * Where 'name' - name for DallasTemperature object
+ */
+#define TEMPS_REGISTER_SPEC_SENSOR(name, pin)			\
+	static OneWire (name)_wire((pin));			\
+	static DallasTemperature (name)(&((name)_wire))
+
+#define TEMPS_REGISTER_SIMPLE_SENSORS(name, pin)		\
+	static OneWire (name)_wire((pin));			\
+	static DallasTemperature (name)(&((name)_wire))
+
+/*
+ * Register new array of 'struct temp_sensors'
+ * 
+ * usage:
+ *	void some_init_func(struct temps_service *service)
+ *	{
+ *		TEMPS_REGISTER_ARR(my_spec_sensors, 2);
+ *
+ *		service->spec_sensors = my_spec_sensors;
+ *		service->spec_sensors[0].type = special;
+ *		service->spec_sensors[1].type = special;
+ *		service->spec_sensors[2].type = special;
+ *		...
+ *		// here get/set addresses:
+ *		service->spec_sensors[0].addr = ...;
+ *		...
+ *	}
+ */
+#define TEMPS_REGISTER_ARR(name, count)				\
+	static struct temp_sensor (name)[(count)]
+
+
+/* alias to float, 255 mean 25.5, 777 mean 77.7, 1115 mean 111.5, etc, one sign afer dot */
+typedef uint16_t fl_t;
+
+
+#ifdef TEMPS_USE_DS18B20
+enum accuracy { simple = 9, special = 12 };
+#endif
+
+
+struct temp_sensor {
+	DallasTemperature *obj;
+	DeviceAddress addr;
+
+	enum accuracy type;
+	fl_t cur_temp;
+	fl_t prev_temp;
+	fl_t tar_temp;
+	uint16_t changes_timer;		/* seconds, between temperature last changes */
+	uint8_t errors;
+	uint32_t _read_timer;
+};
+
+struct temps_service {
+	struct temp_sensor *simple_sensors;	/* arr */
+	uint8_t simple_sensors_count;
+
+	struct temp_sensor *spec_sensors;	/* arr */
+	uint8_t spec_sensors_count;
+};
+
+
+void temps_init(struct temps_service *service);
+void temps_refresh(struct temps_service *service);
+
+
+#endif
