@@ -105,6 +105,11 @@ typedef uint16_t fl_t;
 
 #ifdef TEMPS_USE_DS18B20
 enum accuracy { simple = 9, special = 12 };
+enum {
+	device_not_found_lib_ec = 60,
+	struct_not_found_lib_ec = 61,
+	dt_obj_not_found_lib_ec = 62,	/* DallasTemperature */
+};
 #endif
 
 
@@ -130,7 +135,10 @@ struct temps_service {
 };
 
 
-uint8_t temps_lib_init(struct temps_service *service);
+uint8_t temps_lib_init(struct temp_sensor *sensor,
+		       DallasTemperature *obj,
+		       enum accuracy res,
+		       uint8_t index);
 uint8_t temps_lib_refresh(struct temps_service *service);
 
 
