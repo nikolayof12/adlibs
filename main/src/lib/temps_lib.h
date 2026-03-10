@@ -110,7 +110,7 @@
 #define TEMPS_SET_SENSOR_TO_ZERO(sensor)			\
 	do {							\
 		(sensor).obj = NULL;				\
-		(sensor).address = 0;				\
+		/*(sensor).address = 0;		*/		\
 		(sensor).resolution = simple;  /* def simple */	\
 		(sensor).cur_temp = 0;				\
 		(sensor).prev_temp = 0;				\
@@ -160,7 +160,8 @@ struct temps_service {
 uint8_t temps_lib_init_sensor(struct temp_sensor *sensor,
 			      DallasTemperature *obj,
 			      enum accuracy res,
-			      uint8_t index);
+			      uint8_t index,
+			      uint8_t devices_count);
 uint8_t temps_lib_refresh(struct temps_service *service);
 
 
