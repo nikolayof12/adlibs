@@ -10,8 +10,8 @@
  *	Library for management temperature sensors, in control about every sensor:
  *	struct temp_sensor:
  *		*obj		ptr to DallasTemperature class that control this sensor
- *		addr		address of this sensor
- *		type		special (12 bit) or simple (9 bit)
+ *		address		address of this sensor
+ *		resolution	special (12 bit) or simple (9 bit)
  *		cur_temp	current temp, updating default in background TODO func
  *		prev_temp	previous temp, updating with every chage cur_temp:
  *					so, cur_temp will be as prev_temp, new val -> in cur_temp
@@ -46,15 +46,26 @@
  *	TEMPS_REGISTER_ARR(simple_sns_arr, CNT_SIMPLE_SENSORS);
  *	TEMPS_REGISTER_ARR(special_sns_arr, CNT_SPEC_SENSORS);
  *
- *	static struct temps_service temps;
- *	temps.simple_sensors = simple_sns_arr;
- *	temps.simple_sensors_count = CNT_SIMPLE_SENSORS;
- *	temps.spec_sensors = special_sns_arr;
- *	temps.spec_sensors_count = CNT_SPEC_SENSORS;
+ *	void some_init_func(struct temps_service *temps)
+ *	{
+ *		temps->simple_sensors = simple_sns_arr;
+ *		temps->simple_sensors_count = CNT_SIMPLE_SENSORS;
+ *		temps->spec_sensors = special_sns_arr;
+ *		temps->spec_sensors_count = CNT_SPEC_SENSORS;
  *
- *	temps.simple_sensors[0].type = simple;
- *	temps.spec_sensors[0].type = special;
- *	...
+ *		// sensor found or not, for example, next do it for all your sensors
+ *		if (warn_sensor.getDeviceCount() != 1)
+ *			return ERROR
+ *		...	// other sensors
+ *
+ *		// next get/set addresses, DallasTemperature obj:
+ *		warn_sensor.getAddress(temps->spec_sensor[0].address, 0);
+ *				// where [0] - index of this spec sensor in arr, your value
+ *		temps->spec_sensors[0].obj = &warn_sensor;	// [0] - ditto
+ *		temps->spec_sensors[0].resolution = special;	// [0] - ditto
+ *
+ *		TODO: doc for simple sensors setup
+ *	}
  */
 
 #ifndef TEMPS_USE_DS18B20
@@ -62,35 +73,27 @@
 #endif
 
 /*
- * Register new DallasTemperature object to management sensors
+ * Register new OneWire, DallasTemperature object to management ONE SENSOR
  *
  * Where 'name' - name for DallasTemperature object
  */
 #define TEMPS_REGISTER_SPEC_SENSOR(name, pin)			\
-	static OneWire (name)_wire((pin));			\
-	static DallasTemperature (name)(&((name)_wire))
+	static OneWire name ## _wire((pin));			\
+	static DallasTemperature name(&(name ## _wire))
 
+/*
+ * Register new OneWire, DallasTemperature objects to managment MULTIPLE SENSORS (<127)
+ *
+ * Where 'name' - name for DallasTemperature object
+ */
 #define TEMPS_REGISTER_SIMPLE_SENSORS(name, pin)		\
-	static OneWire (name)_wire((pin));			\
-	static DallasTemperature (name)(&((name)_wire))
+	static OneWire name ## _wire((pin));			\
+	static DallasTemperature name(&(name ## _wire));	\
 
 /*
  * Register new array of 'struct temp_sensors'
- * 
- * usage:
- *	void some_init_func(struct temps_service *service)
- *	{
- *		TEMPS_REGISTER_ARR(my_spec_sensors, 2);
  *
- *		service->spec_sensors = my_spec_sensors;
- *		service->spec_sensors[0].type = special;
- *		service->spec_sensors[1].type = special;
- *		service->spec_sensors[2].type = special;
- *		...
- *		// here get/set addresses:
- *		service->spec_sensors[0].addr = ...;
- *		...
- *	}
+ * Where 'name' - name of array, 'count' - count of items in array
  */
 #define TEMPS_REGISTER_ARR(name, count)				\
 	static struct temp_sensor (name)[(count)]
@@ -102,14 +105,19 @@ typedef uint16_t fl_t;
 
 #ifdef TEMPS_USE_DS18B20
 enum accuracy { simple = 9, special = 12 };
+enum {
+	device_not_found_lib_ec = 60,
+	struct_not_found_lib_ec = 61,
+	dt_obj_not_found_lib_ec = 62,	/* DallasTemperature */
+};
 #endif
 
 
 struct temp_sensor {
 	DallasTemperature *obj;
-	DeviceAddress addr;
+	DeviceAddress address;
 
-	enum accuracy type;
+	enum accuracy resolution;
 	fl_t cur_temp;
 	fl_t prev_temp;
 	fl_t tar_temp;
@@ -127,8 +135,11 @@ struct temps_service {
 };
 
 
-void temps_init(struct temps_service *service);
-void temps_refresh(struct temps_service *service);
+uint8_t temps_lib_init_sensor(struct temp_sensor *sensor,
+			      DallasTemperature *obj,
+			      enum accuracy res,
+			      uint8_t index);
+uint8_t temps_lib_refresh(struct temps_service *service);
 
 
 #endif
