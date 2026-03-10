@@ -66,6 +66,12 @@
  *
  *		TODO: doc for simple sensors setup
  *	}
+ *
+ *
+ *	NOTE:
+ *		The begin() func of DallasTemperature obj IS NOT called ANYWHERE here.
+ *		You need to call it yourself for your objects
+ *		TODO: add general init func to do it
  */
 
 #ifndef TEMPS_USE_DS18B20
@@ -97,6 +103,22 @@
  */
 #define TEMPS_REGISTER_ARR(name, count)				\
 	static struct temp_sensor (name)[(count)]
+
+/*
+ * Set all fields of sensor to 0/NULL
+ */
+#define TEMPS_SET_SENSOR_TO_ZERO(sensor)			\
+	do {							\
+		(sensor).obj = NULL;				\
+		(sensor).address = 0;				\
+		(sensor).resolution = simple;  /* def simple */	\
+		(sensor).cur_temp = 0;				\
+		(sensor).prev_temp = 0;				\
+		(sensor).tar_temp = 0;				\
+		(sensor).changes_timer = 0;			\
+		(sensor).errors = 0;				\
+		(sensor)._read_timer = 0;			\
+	} while(0)
 
 
 /* alias to float, 255 mean 25.5, 777 mean 77.7, 1115 mean 111.5, etc, one sign afer dot */
