@@ -16,7 +16,7 @@
  *		prev_temp	previous temp, updating with every chage cur_temp:
  *					so, cur_temp will be as prev_temp, new val -> in cur_temp
  *		tar_temp	just value to comparing
- *		changes_timer	TODO
+ *		changes_timer	millis(), when was entered into .prev_temp;
  *		errors		if some errors in the read/cmp/other proccess, it's will be > 0
  *		_read_timer	internal timer to between request temps
  *
@@ -143,7 +143,7 @@ struct temp_sensor {
 	fl_t cur_temp;
 	fl_t prev_temp;
 	fl_t tar_temp;
-	uint16_t changes_timer;		/* seconds, between temperature last changes */
+	uint32_t changes_timer;		/* millis(), when value was entered into 'prev_temp' */
 	uint8_t errors;
 	uint32_t _read_timer;
 };
