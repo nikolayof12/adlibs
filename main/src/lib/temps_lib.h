@@ -46,15 +46,26 @@
  *	TEMPS_REGISTER_ARR(simple_sns_arr, CNT_SIMPLE_SENSORS);
  *	TEMPS_REGISTER_ARR(special_sns_arr, CNT_SPEC_SENSORS);
  *
- *	static struct temps_service temps;
- *	temps.simple_sensors = simple_sns_arr;
- *	temps.simple_sensors_count = CNT_SIMPLE_SENSORS;
- *	temps.spec_sensors = special_sns_arr;
- *	temps.spec_sensors_count = CNT_SPEC_SENSORS;
+ *	void some_init_func(struct temps_service *temps)
+ *	{
+ *		temps->simple_sensors = simple_sns_arr;
+ *		temps->simple_sensors_count = CNT_SIMPLE_SENSORS;
+ *		temps->spec_sensors = special_sns_arr;
+ *		temps->spec_sensors_count = CNT_SPEC_SENSORS;
  *
- *	temps.simple_sensors[0].type = simple;
- *	temps.spec_sensors[0].type = special;
- *	...
+ *		// sensor found or not, for example, next do it for all your sensors
+ *		if (warn_sensor.getDeviceCount() != 1)
+ *			return ERROR
+ *		...	// other sensors
+ *
+ *		// next get/set addresses, DallasTemperature obj:
+ *		warn_sensor.getAddress(temps->spec_sensor[0].address, 0);
+ *				// where [0] - index of this spec sensor in arr, your value
+ *		temps->spec_sensors[0].obj = &warn_sensor;	// [0] - ditto
+ *		temps->spec_sensors[0].resolution = special;	// [0] - ditto
+ *
+ *		TODO: doc for simple sensors setup
+ *	}
  */
 
 #ifndef TEMPS_USE_DS18B20
