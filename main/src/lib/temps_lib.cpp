@@ -33,8 +33,10 @@ uint8_t temps_lib_init_sensor(struct temp_sensor *sensor,
 	if (obj->getDeviceCount() != 1)
 		return device_not_found_lib_ec;
 
+	TEMPS_SET_SENSOR_TO_ZERO(*sensor);
 
 	obj->getAddress(sensor->address, index);
+	obj->setResolution(sensor->address, res);
 	sensor->obj = obj;
 	sensor->resolution = res;
 
