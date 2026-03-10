@@ -62,35 +62,27 @@
 #endif
 
 /*
- * Register new DallasTemperature object to management sensors
+ * Register new OneWire, DallasTemperature object to management ONE SENSOR
  *
  * Where 'name' - name for DallasTemperature object
  */
 #define TEMPS_REGISTER_SPEC_SENSOR(name, pin)			\
-	static OneWire (name)_wire((pin));			\
-	static DallasTemperature (name)(&((name)_wire))
+	static OneWire name ## _wire((pin));			\
+	static DallasTemperature name(&(name ## _wire))
 
+/*
+ * Register new OneWire, DallasTemperature objects to managment MULTIPLE SENSORS (<127)
+ *
+ * Where 'name' - name for DallasTemperature object
+ */
 #define TEMPS_REGISTER_SIMPLE_SENSORS(name, pin)		\
-	static OneWire (name)_wire((pin));			\
-	static DallasTemperature (name)(&((name)_wire))
+	static OneWire name ## _wire((pin));			\
+	static DallasTemperature name(&(name ## _wire));	\
 
 /*
  * Register new array of 'struct temp_sensors'
- * 
- * usage:
- *	void some_init_func(struct temps_service *service)
- *	{
- *		TEMPS_REGISTER_ARR(my_spec_sensors, 2);
  *
- *		service->spec_sensors = my_spec_sensors;
- *		service->spec_sensors[0].type = special;
- *		service->spec_sensors[1].type = special;
- *		service->spec_sensors[2].type = special;
- *		...
- *		// here get/set addresses:
- *		service->spec_sensors[0].addr = ...;
- *		...
- *	}
+ * Where 'name' - name of array, 'count' - count of items in array
  */
 #define TEMPS_REGISTER_ARR(name, count)				\
 	static struct temp_sensor (name)[(count)]
