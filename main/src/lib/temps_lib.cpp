@@ -8,7 +8,7 @@
 
 
 /*
- * Get/set address of sensor, resolution, DallasTemperature obj ptr
+ * Setup individual sensor
  *
  * @sensor - ptr to struct temp_sensor, here will be setted values
  * @obj - ptr to DallasTemperature obj, which can control multiple sensors
@@ -17,10 +17,10 @@
  *
  * return 0 if initialization is successful, else *_lib_ec error code
  */
-uint8_t temps_lib_init(struct temp_sensor *sensor,
-		       DallasTemperature *obj,
-		       enum accuracy res,
-		       uint8_t index)
+uint8_t temps_lib_init_sensor(struct temp_sensor *sensor,
+			      DallasTemperature *obj,
+			      enum accuracy res,
+			      uint8_t index)
 {
 /* TODO: here setup the addresses of every sensor, etc... */
 

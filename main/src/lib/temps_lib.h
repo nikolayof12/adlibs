@@ -135,10 +135,10 @@ struct temps_service {
 };
 
 
-uint8_t temps_lib_init(struct temp_sensor *sensor,
-		       DallasTemperature *obj,
-		       enum accuracy res,
-		       uint8_t index);
+uint8_t temps_lib_init_sensor(struct temp_sensor *sensor,
+			      DallasTemperature *obj,
+			      enum accuracy res,
+			      uint8_t index);
 uint8_t temps_lib_refresh(struct temps_service *service);
 
 
