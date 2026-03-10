@@ -10,8 +10,8 @@
  *	Library for management temperature sensors, in control about every sensor:
  *	struct temp_sensor:
  *		*obj		ptr to DallasTemperature class that control this sensor
- *		addr		address of this sensor
- *		type		special (12 bit) or simple (9 bit)
+ *		address		address of this sensor
+ *		resolution	special (12 bit) or simple (9 bit)
  *		cur_temp	current temp, updating default in background TODO func
  *		prev_temp	previous temp, updating with every chage cur_temp:
  *					so, cur_temp will be as prev_temp, new val -> in cur_temp
@@ -107,9 +107,9 @@ enum accuracy { simple = 9, special = 12 };
 
 struct temp_sensor {
 	DallasTemperature *obj;
-	DeviceAddress addr;
+	DeviceAddress address;
 
-	enum accuracy type;
+	enum accuracy resolution;
 	fl_t cur_temp;
 	fl_t prev_temp;
 	fl_t tar_temp;
