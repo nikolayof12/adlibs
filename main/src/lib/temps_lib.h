@@ -16,7 +16,7 @@
  *		prev_temp	previous temp, updating with every chage cur_temp:
  *					so, cur_temp will be as prev_temp, new val -> in cur_temp
  *		tar_temp	just value to comparing
- *		changes_timer	TODO
+ *		changes_timer	millis(), when was entered into .prev_temp;
  *		errors		if some errors in the read/cmp/other proccess, it's will be > 0
  *		_read_timer	internal timer to between request temps
  *
@@ -66,6 +66,12 @@
  *
  *		TODO: doc for simple sensors setup
  *	}
+ *
+ *
+ *	NOTE:
+ *		The begin() func of DallasTemperature obj IS NOT called ANYWHERE here.
+ *		You need to call it yourself for your objects
+ *		TODO: add general init func to do it
  */
 
 #ifndef TEMPS_USE_DS18B20
@@ -98,6 +104,22 @@
 #define TEMPS_REGISTER_ARR(name, count)				\
 	static struct temp_sensor (name)[(count)]
 
+/*
+ * Set all fields of sensor to 0/NULL
+ */
+#define TEMPS_SET_SENSOR_TO_ZERO(sensor)			\
+	do {							\
+		(sensor).obj = NULL;				\
+		(sensor).address = 0;				\
+		(sensor).resolution = simple;  /* def simple */	\
+		(sensor).cur_temp = 0;				\
+		(sensor).prev_temp = 0;				\
+		(sensor).tar_temp = 0;				\
+		(sensor).changes_timer = 0;			\
+		(sensor).errors = 0;				\
+		(sensor)._read_timer = 0;			\
+	} while(0)
+
 
 /* alias to float, 255 mean 25.5, 777 mean 77.7, 1115 mean 111.5, etc, one sign afer dot */
 typedef uint16_t fl_t;
@@ -121,7 +143,7 @@ struct temp_sensor {
 	fl_t cur_temp;
 	fl_t prev_temp;
 	fl_t tar_temp;
-	uint16_t changes_timer;		/* seconds, between temperature last changes */
+	uint32_t changes_timer;		/* millis(), when value was entered into 'prev_temp' */
 	uint8_t errors;
 	uint32_t _read_timer;
 };
