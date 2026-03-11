@@ -25,56 +25,56 @@ void display_lib_refresh(struct display_service *display)
  * here:
  *	- rewriting chars on screen every display->_refresh_time ms
  *	- on/off bg light (depending on display->_bg_light)
- *	- blinking (if neccessary) every display->_blink_time
+ *	- blinking (if neccessary) every display->_bg_blink_time
  *
  *	if blinking && light on, then no blinking
+ *	if blinking && light off, then do blinking
  */
 
 	if (!display->lcd)
 		return;
 
-	/* rewrite chars */
+	/* refresh lines */
 	if (millis() - display->_refresh_timer_ >= display->_refresh_time) {
-		/* TODO: modify this to use variable count of _cur_lines on screen */
 		display->_refresh_timer_ = millis();
 
-		display->lcd->setCursor(0, 0);
-		for (int i = 0; i < lcd_lines_count; i++)
-			display->lcd->print(display->_cur_lines[0][i]);
+		/* TODO: need to test */
+		for (uint8_t l = 0; l < display->_lcd_lines_count; i++) {
+			display->lcd->setCursor(0, l);
 
-		display->lcd->setCursor(0, 1);
-		for (int i = 0; i < lcd_lines_count; i++)
-			display->lcd->print(display->_cur_lines[1][i]);
+			for (uint8_t c = 0; c < display->_lcd_line_length; c++)
+				display->lcd->print((char) display->_cur_lines[0][c]);
+		}
 	}
 
 	/* on/off bg light */
-	if (display->_bg_light) { /* on */
+	if (display->_bg_light) { /* target - on */
 		if (!display->_bg_light_state) {
 			display->lcd->backlight();
 			display->_bg_light_state = 1;
 		}
 
 		return; /* exit to dont't try do blinking */
-	} else if (!display->_bg_light) { /* off */
-		if (display->_bg_light_state) {
+	} else if (!display->_bg_light) { /* target - off */
+		if (display->_bg_light_state && !display->_bg_blink) {
 			display->lcd-> noBacklight();
 			display->_bg_light_state = 0;
 		}
+
 		/* here without 'return', need to try blinking */
 	}
 
 	/* blink */
 	if (display->_bg_blink &&
-	    (millis() - display->_blink_timer_ >= display->_blink_time)) {
+	    (millis() - display->_blink_timer_ >= display->_bg_blink_time)) {
 		display->_blink_timer_ = millis();
 
-		if (display->_bg_light_state) {
+		if (display->_bg_light_state)
 			display->lcd->noBacklight();
-			display->_bg_light_state = 0;
-		} else {
+		else
 			display->lcd->backlight();
-			display->_bg_light_state = 1;
-		}
+
+		display->_bg_light_state = ~display->_bg_light_state;
 	}
 }
 
