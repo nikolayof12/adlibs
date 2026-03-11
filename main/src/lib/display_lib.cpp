@@ -28,6 +28,7 @@ void display_lib_refresh(struct display_service *display)
  *	- blinking (if neccessary) every display->_bg_blink_time
  *
  *	if blinking && light on, then no blinking
+ *	if blinking && light off, then do blinking
  */
 
 	if (!display->lcd)
@@ -48,18 +49,19 @@ void display_lib_refresh(struct display_service *display)
 	}
 
 	/* on/off bg light */
-	if (display->_bg_light) { /* on */
+	if (display->_bg_light) { /* target - on */
 		if (!display->_bg_light_state) {
 			display->lcd->backlight();
 			display->_bg_light_state = 1;
 		}
 
 		return; /* exit to dont't try do blinking */
-	} else if (!display->_bg_light) { /* off */
-		if (display->_bg_light_state) {
+	} else if (!display->_bg_light) { /* target - off */
+		if (display->_bg_light_state && !display->_bg_blink) {
 			display->lcd-> noBacklight();
 			display->_bg_light_state = 0;
 		}
+
 		/* here without 'return', need to try blinking */
 	}
 
