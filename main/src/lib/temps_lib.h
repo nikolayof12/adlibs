@@ -33,37 +33,59 @@
  *
  *	Usage:
  *
- *	#define CNT_SPEC_SENSORS 2
- *	#define CNT_SIMPLE_SENSORS 3
+ *	So, we have 2 sensors on D8 pin, and 3 on D10 pin;
+ *	Sensors from D8 pin need set to 12 bit,
+ *	Sensors from D10 pin - to 9 bit.
+ *
+ *	#define COUNT_OF_SENSORS 5
  *
  *	// here register DallasTemperature objects
- *	TEMPS_REGISTER_SENSORS_PIN(warn_sensor, 8);
- *	TEMPS_REGISTER_SENSORS_PIN(top_sensor, 9);
- *	TEMPS_REGISTER_SENSORS_PIN(def_sensor, 10);
+ *	TEMPS_REGISTER_SENSORS_PIN(warn_sensors, 8);
+ *	TEMPS_REGISTER_SENSORS_PIN(def_sensors, 10);
  *
- *	// just arrays, without set OneWire/DallasTemperature
- *	TEMPS_REGISTER_ARR(simple_sns_arr, CNT_SIMPLE_SENSORS);
- *	TEMPS_REGISTER_ARR(special_sns_arr, CNT_SPEC_SENSORS);
+ *	// just array, without set OneWire/DallasTemperature
+ *	TEMPS_REGISTER_ARR(sensors_arr, ALL_COUNT_OF_SENSORS);
  *
  *	void some_init_func(struct temps_service *temps)
  *	{
- *		temps->simple_sensors = simple_sns_arr;
- *		temps->simple_sensors_count = CNT_SIMPLE_SENSORS;
- *		temps->spec_sensors = special_sns_arr;
- *		temps->spec_sensors_count = CNT_SPEC_SENSORS;
+ *		temps->sensors = sensors_arr;
+ *		temps->sensors_count = ALL_COUNT_OF_SENSORS;
  *
  *		// sensor found or not, for example, next do it for all your sensors
  *		if (warn_sensor.getDeviceCount() != 1)
  *			return ERROR
  *		...	// other sensors
  *
- *		// next get/set addresses, DallasTemperature obj:
- *		warn_sensor.getAddress(temps->spec_sensor[0].address, 0);
- *				// where [0] - index of this spec sensor in arr, your value
- *		temps->spec_sensors[0].obj = &warn_sensor;	// [0] - ditto
- *		temps->spec_sensors[0].resolution = special;	// [0] - ditto
+ *		// need call before all temps_lib_init_sensor() sensors
+ *		warn_sensors.begin();
+ *		def_sensors.begin();
  *
- *		TODO: doc for simple sensors setup
+ *		temps_lib_init_sensor(&temps->sensors[0],
+ *				      warn_sensors,
+ *				      special,
+ *				      0, 1);
+ *		temps_lib_init_sensor(&temps->sensors[1],
+ *				      warn_sensors,
+ *				      special,
+ *				      0, 1);
+ *
+ *
+ *		temps_lib_init_sensor(&temps->sensors[2],
+ *				      def_sensors,
+ *				      simple,
+ *				      0, 0);
+ *		temps_lib_init_sensor(&temps->sensors[3],
+ *				      def_sensors,
+ *				      simple,
+ *				      0, 1);
+ *		temps_lib_init_sensor(&temps->sensors[4],
+ *				      def_sensors,
+ *				      simple,
+ *				      0, 2);
+ *
+ *		// manually set the async mode
+ *		warn_sensors.setWaitForConversion(false);
+ *		def_sensors.setWaitForConversion(false);
  *	}
  *
  *
