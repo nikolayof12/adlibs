@@ -39,6 +39,16 @@
 		.obj = &(_enc_ ## name)					\
 	}
 
+/*
+ * Register new array of 'struct encoder' objects for all your encoders
+ *
+ * @name - name for new array
+ * @size - count of 'struct encoder' items in array
+ */
+#define KEYBOARDS_REGISTER_ENCODERS_ARRAY(name, size)			\
+	static struct encoder (name)[(size)]
+
+
 typedef void *(*action_func)(void *arg);
 
 struct encoder {
