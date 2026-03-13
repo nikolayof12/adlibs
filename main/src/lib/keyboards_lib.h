@@ -61,6 +61,8 @@
 #define KEYBOARDS_REGISTER_BUTTON(name, pin)				\
 	static Button (_btn_ ## name)((pin));				\
 	static struct button (name) = {					\
+		.click = NULL,						\
+		.long_click = NULL,					\
 		.obj = &(_btn_ ## name)					\
 	}
 
@@ -84,6 +86,10 @@
 #define KEYBOARDS_REGISTER_ENCODER(name, left, right, key)		\
 	static EncButton (_enc_ ## name)((left), (right), (key));	\
 	static struct encoder (name) = {				\
+		.left_turn = NULL,					\
+		.left_pressed_turn = NULL,				\
+		.right_turn = NULL,					\
+		.right_pressed_turn = NULL,				\
 		.obj = &(_enc_ ## name)					\
 	}
 
@@ -103,8 +109,10 @@
  */
 #define KEYBOARDS_REGISTER_SERVICE_STRUCT(name)				\
 	static struct keyboard_service (name) = {			\
-		.encoders = NULL;					\
-		.buttons = NULL;					\
+		.encoders = NULL,					\
+		.encoders_count = 0,					\
+		.buttons = NULL,					\
+		.buttons_count = 0					\
 	}
 
 
