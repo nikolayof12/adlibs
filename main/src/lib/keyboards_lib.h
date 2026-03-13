@@ -59,11 +59,11 @@ struct button {
 	Button *obj;
 };
 
-#if 0
-struct btn {
-	uint8_t pin;
-	uint8_t state;
+struct keyboard_service {
+	struct encoder *encoders;	/* array */
+	struct button *buttons;		/* array */
 };
+
 
 void keyboard_init(struct keyboard_service *service);
 
