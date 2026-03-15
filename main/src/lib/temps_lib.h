@@ -19,6 +19,8 @@
  *		changes_timer	millis(), when was entered into .prev_temp;
  *		errors		if some errors in the read/cmp/other proccess, it's will be > 0
  *		_read_timer	internal timer to between request temps
+ *		cur_temp_str[5]	string representation about current temp, updating with cur_temp
+ *		is_enable	if 0, sensor is not serviced, other fields are not updated
  *
  *	General structure:
  *	struct temps_service:
@@ -138,6 +140,7 @@
 		(sensor).data = 0;				\
 		(sensor).errors = 0;				\
 		(sensor)._read_timer = 0;			\
+		(sensor).is_enable = 1;	/* default enable */	\
 	} while (0)
 
 
@@ -172,8 +175,9 @@ struct temp_sensor {
 	fl_t tar_temp;
 	uint32_t changes_timer;		/* millis(), when value was entered into 'prev_temp' */
 	uint32_t data;			/* user data about this sensor */
-	uint8_t str[5];			/* buff to str representation of cur_temp */
+	uint8_t cur_temp_str[5];	/* buff to str representation of cur_temp */
 	uint8_t errors;
+	uint8_t is_enable;		/* 0 - disable, 1 - enable */
 	uint32_t _read_timer;
 };
 
