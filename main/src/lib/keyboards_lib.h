@@ -90,6 +90,7 @@
 		.left_pressed_turn = NULL,				\
 		.right_turn = NULL,					\
 		.right_pressed_turn = NULL,				\
+		.click = NULL,						\
 		.obj = &(_enc_ ## name)					\
 	}
 
@@ -136,6 +137,7 @@ struct encoder {
 	struct keyboard_action *left_pressed_turn;
 	struct keyboard_action *right_turn;
 	struct keyboard_action *right_pressed_turn;
+	struct keyboard_action *click;
 
 	/* service fields */
 	EncButton *obj;
