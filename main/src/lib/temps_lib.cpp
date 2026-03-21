@@ -138,30 +138,39 @@ uint8_t temps_lib_refresh(struct temps_service *service)
  * temps_lib_convert(333, res, 1);
  * -> res == " 33.3"
  * temps_lib_convert(333, res, 0);
- * -> res == "  333"
+ * -> res == "333aa"
+ *
+ *  max:
+ *	temps_lib_convert(999, res, 1)
+ *	-> "999.9"
+ *	temps_lib_convert(999, res, 0)
+ *	-> "999  "
+ *
+ *  err:
+ *	temps_lib_convert(10000, res, 1)
+ *	-> "aeraa"
+ *	temps_lib_convert(10000, res, 0)
+ *	-> "aeraa"
  */
 uint8_t *temps_lib_convert(fl_t num, uint8_t buff[5], uint8_t is_float)
 {
 	uint32_t tmp;
 	int data;
 
-	buff[0] = ' ';
-	buff[1] = ' ';
-	buff[2] = ' ';
-	buff[3] = ' ';
-	buff[4] = ' ';
-
 	if ((num < 10) || (num >= 10000)) {
-		buff[0] = 'e';
-		buff[1] = 'r';
+		buff[1] = 'e';
 		buff[2] = 'r';
-		buff[3] = 'o';
-		buff[4] = 'r';
 
 		return NULL;
 	}
 
 	if (is_float) {
+		buff[0] = ' ';
+		buff[1] = ' ';
+		buff[2] = ' ';
+		buff[3] = ' ';
+		buff[4] = ' ';
+
 		buff[4] = (num % 10) + '0';
 		num /= 10;
 		buff[3] = '.';
@@ -187,13 +196,13 @@ uint8_t *temps_lib_convert(fl_t num, uint8_t buff[5], uint8_t is_float)
 		return buff;
 	}
 
-	buff[4] = num % 10 + '0';
-	num /= 10;
+	/* so as num must be < 10000 -> max is 999.9, if no float, then just 999
+	 * that 3 symbols, because last [3] and [4] don't change
+	 */
+	buff[0] = ' ';
+	buff[1] = ' ';
+	buff[2] = ' ';
 
-	if (!num)
-		return buff + 4;
-
-	buff[3] = num % 10 + '0';
 	num /= 10;
 
 	if (!num)
