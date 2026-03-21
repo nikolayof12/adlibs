@@ -152,11 +152,8 @@ uint8_t *temps_lib_convert(fl_t num, uint8_t buff[5], uint8_t is_float)
 	buff[4] = ' ';
 
 	if ((num < 10) || (num >= 10000)) {
-		buff[0] = 'e';
-		buff[1] = 'r';
+		buff[1] = 'e';
 		buff[2] = 'r';
-		buff[3] = 'o';
-		buff[4] = 'r';
 
 		return NULL;
 	}
