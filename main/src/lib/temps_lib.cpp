@@ -145,12 +145,6 @@ uint8_t *temps_lib_convert(fl_t num, uint8_t buff[5], uint8_t is_float)
 	uint32_t tmp;
 	int data;
 
-	buff[0] = ' ';
-	buff[1] = ' ';
-	buff[2] = ' ';
-	buff[3] = ' ';
-	buff[4] = ' ';
-
 	if ((num < 10) || (num >= 10000)) {
 		buff[1] = 'e';
 		buff[2] = 'r';
@@ -159,6 +153,12 @@ uint8_t *temps_lib_convert(fl_t num, uint8_t buff[5], uint8_t is_float)
 	}
 
 	if (is_float) {
+		buff[0] = ' ';
+		buff[1] = ' ';
+		buff[2] = ' ';
+		buff[3] = ' ';
+		buff[4] = ' ';
+
 		buff[4] = (num % 10) + '0';
 		num /= 10;
 		buff[3] = '.';
@@ -184,13 +184,13 @@ uint8_t *temps_lib_convert(fl_t num, uint8_t buff[5], uint8_t is_float)
 		return buff;
 	}
 
-	buff[4] = num % 10 + '0';
-	num /= 10;
+	/* so as num must be < 10000 -> max is 999.9, if no float, then just 999
+	 * that 3 symbols, because last [3] and [4] don't change
+	 */
+	buff[0] = ' ';
+	buff[1] = ' ';
+	buff[2] = ' ';
 
-	if (!num)
-		return buff + 4;
-
-	buff[3] = num % 10 + '0';
 	num /= 10;
 
 	if (!num)
