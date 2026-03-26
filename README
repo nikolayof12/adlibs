@@ -17,3 +17,16 @@ Supported devices:
 	- temperature sensors
 	- LCD displays
 	- keyboards (a set of single buttons and encoders)
+
+
+List of libraries used:
+	// display:
+	- LiquidCrystal_I2C
+
+	// temperature:
+	- OneWire
+	- DallasTemperature
+
+	// keyboard:
+	- EncButton
+	- GyverIO
