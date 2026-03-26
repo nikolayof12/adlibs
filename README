@@ -1,3 +1,19 @@
-Project to control rectification column
+Arduino Devices Libraries
 
-Also, creating libraries to display/temps/keyborad/relays management into thematic branches
+
+The goal of this library is to free the user from having to implement the
+processing logic for each device themselves and to provide a universal API
+for interacting with each device, even if they workk completely different
+(for example, if you have several different temperature sensors of different
+GPIOs, you don't need to remember specific informatioon about each of them -
+the library will take care of it for you; after all, they all just measure
+temperature)
+
+The documentation for each library is located in the corresponding header file.
+
+
+Supported devices:
+
+	- temperature sensors
+	- LCD displays
+	- keyboards (a set of single buttons and encoders)
