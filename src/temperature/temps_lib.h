@@ -149,6 +149,10 @@ typedef uint16_t fl_t;
 
 
 #ifdef TEMPS_USE_DS18B20
+
+#define DS18B20_MAX_TEMP 125
+#define DS18B20_MIN_TEMP -55
+
 enum accuracy {
 			/* resolution	time */
 	simple = 9,	/* 0.5 C	93.75 ms*/
@@ -162,7 +166,7 @@ enum {
 	struct_not_found_lib_ec = 61,
 	dt_obj_not_found_lib_ec = 62,	/* DallasTemperature */
 };
-#endif
+#endif /* TEMPS_USE_DS18B20 */
 
 
 struct temp_sensor {
