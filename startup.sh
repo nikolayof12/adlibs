@@ -7,6 +7,7 @@
 #      sketch upload port to as a command line argument
 
 
+upload_args=""		# arguments for the upload_firmware() func
 
 
 function compile_firmware()
@@ -65,6 +66,14 @@ function args_processing()
 		--help)
 			;;
 		--device-file)
+			shift
+			if [ -n "$1" ]
+			then
+				upload_args+="$1"
+			else
+				echo "You need to specify the file that provides the device"
+				exit 1
+			fi
 			;;
 		*)
 			echo "Option '$1' not found"
@@ -79,4 +88,4 @@ function args_processing()
 
 args_processing $@
 compile_firmware
-upload_firmware
+upload_firmware $upload_args
