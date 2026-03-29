@@ -23,7 +23,7 @@ function compile_firmware()
 	fi
 	if [ ! -f $firmware_main_file ]
 	then
-		echo "I can't find the '$firmware_main_file' file to compile"
+		echo "compilation: I can't find the '$firmware_main_file' file to compile"
 		exit 10
 	fi
 
