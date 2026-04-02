@@ -100,14 +100,14 @@ function args_processing()
 			exit 0
 			;;
 		--device-file)
-			shift
-			if [ -n "$1" ]
+			if [ -n "$2" ]
 			then
-				upload_args+="$1"
+				upload_args+="$2"
 			else
 				echo "You need to specify the file that provides the device"
 				exit 1
 			fi
+			shift
 			;;
 		--firmware-file)
 			if [ -n "$2" ]
