@@ -11,15 +11,18 @@
  *	struct temp_sensor:
  *		*obj		ptr to DallasTemperature class that control this sensor
  *		address		address of this sensor
- *		resolution	special (12 bit) or simple (9 bit)
- *		cur_temp	current temp, updating in background temps_lib_refresh() func
- *		prev_temp	previous temp, updating with every chage cur_temp:
+ *
+ *	RW	resolution	special (12 bit) or simple (9 bit)
+ *	R	cur_temp	current temp, updating in background temps_lib_refresh() func
+ *	R	prev_temp	previous temp, updating with every chage cur_temp:
  *					so, cur_temp will be as prev_temp, new val -> in cur_temp
- *		tar_temp	just value to comparing
- *		changes_timer	millis(), when was entered into .prev_temp;
- *		errors		if some errors in the read/cmp/other proccess, it's will be > 0
- *		_read_timer	internal timer to between request temps
- *		is_enable	if 0, sensor is not serviced, other fields are not updated
+ *	RW	tar_temp	just value to comparing
+ *	R	changes_timer	millis(), when was entered into .prev_temp;
+ *	R	errors		if some errors in the read/cmp/other proccess, it's will be > 0
+ *	RW	is_enable	if 0, sensor is not serviced, other fields are not updated
+ *
+ *		// internal data, you don't need to change it:
+ *		_read_timer	timer between temp requests
  *
  *	General structure:
  *	struct temps_service:
