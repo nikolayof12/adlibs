@@ -20,6 +20,7 @@
  *	R	changes_timer	millis(), when was entered into .prev_temp;
  *	R	errors		if some errors in the read/cmp/other proccess, it's will be > 0
  *	RW	is_enable	if 0, sensor is not serviced, other fields are not updated
+ *	RW	req_interval	request temp from sensor no more often than every req_interval ms
  *
  *		// internal data, you don't need to change it:
  *		_read_timer	timer between temp requests
@@ -186,6 +187,7 @@ struct temp_sensor {
 	fl_t tar_temp;
 	uint32_t changes_timer;		/* millis(), when value was entered into 'prev_temp' */
 	uint32_t data;			/* user data about this sensor */
+	uint32_t req_interval;		/* request temp no more often than every req_interval ms */
 	uint8_t errors;
 	bool is_enable;
 	uint32_t _read_timer;
