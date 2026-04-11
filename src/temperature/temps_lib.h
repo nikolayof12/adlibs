@@ -163,6 +163,15 @@ enum {
 	struct_not_found_lib_ec = 61,
 	dt_obj_not_found_lib_ec = 62,	/* DallasTemperature */
 };
+
+struct ds18b20 {
+	DallasTemperature *obj;
+	DeviceAddress address;
+};
+
+fl_t read_ds18b20(struct temp_sensor *sensor);
+void request_ds18b20(struct temp_sensor *senfor);
+
 #endif /* TEMPS_USE_DS18B20 */
 
 
