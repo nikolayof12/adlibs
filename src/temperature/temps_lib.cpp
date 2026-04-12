@@ -16,7 +16,7 @@
  *
  * Return 0 if everything is fine, else TEMPS_*_INVALID macro
  */
-uint8_t temps_lib_init_sensor(struct temp_sensor *sensor)
+uint8_t temps_lib_init(struct temp_sensor *sensor)
 {
 	if (!sensor->sensor_data)
 		return TEMPS_SENSOR_DATA_INVALID;
