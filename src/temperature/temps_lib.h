@@ -140,14 +140,6 @@ typedef uint16_t fl_t;
 #define DS18B20_11_BIT_TIME 350
 #define DS18B20_12_BIT_TIME 750
 
-enum accuracy {
-			/* resolution	time */
-	simple = 9,	/* 0.5 C	93.75 ms*/
-	standard = 10,	/* 0.25 C	187.5 ms*/
-	advanced = 11,	/* 0.125 C	350 ms */
-	special = 12	/* 0.0625 C	750 ms */
-};
-
 enum {
 	device_not_found_lib_ec = 60,
 	struct_not_found_lib_ec = 61,
