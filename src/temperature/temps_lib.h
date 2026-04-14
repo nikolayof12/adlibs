@@ -9,25 +9,23 @@
  *
  *	Library for management temperature sensors, in control about every sensor:
  *	struct temp_sensor:
- *		*obj		ptr to DallasTemperature class that control this sensor
- *		address		address of this sensor
  *	RW	*sensor_data	sensor-specific data; need for read_temp() and request_temp()
- *
  *	R	cur_temp	current temp, updating in background temps_lib_refresh() func
  *	R	prev_temp	previous temp, updating with every chage cur_temp:
  *					so, cur_temp will be as prev_temp, new val -> in cur_temp
- *	RW	tar_temp	just value to comparing
+ *	RW	tar_temp	just your value; library doesn't use this
  *	R	changes_timer	millis(), when was entered into .prev_temp;
  *	R	errors		if some errors in the read/cmp/other proccess, it's will be > 0
- *	RW	is_enable	if 0, sensor is not serviced, other fields are not updated
- *	RW	req_interval	request temp from sensor no more often than every req_interval ms
- *
- *	 W	read_temp	sensor-specific temperature request function;
- *					the library thinks that you set this function;
+ *	RW	is_enable	if false, sensor is not serviced, other fields are not updated
+ *	RW	req_interval	call request_temp() and read_temp() no more often than every
+ *					req_interval ms
+ *	RW	data		your private data; library doesn't use this; maybe replace to ptr?
+ *	 W	read_temp	sensor-specific temperature read function pointer;
+ *					the library thinks that you set this pointer;
  *					the library calls it automatcally every 'req_interval' ms
- *	 W	request_temp	sensor-specific temperature update function;
- *					the library thinks that you set this function;
- *					the library calls it automatcally
+ *	 W	request_temp	sensor-specific temperature update function pointer;
+ *					the library thinks that you set this pointer;
+ *					the library calls it automatcally every 'req_interval' ms
  *
  *		// internal data, you don't need to change it:
  *		_read_timer	timer between temp requests
@@ -79,13 +77,6 @@
  *
  *	Next you can computing cur_temp, tar_temp, prev_temp, changes_timer in bg function,
  *	in interrupts, in callback... as you want, here without this
- *
- *	NOTE:
- *		begin() func of DallasTemperature obj IS NOT called ANYWHERE here.
- *		setWaitForConversion() func of DallasTemperature obj IS NOT called ANYWHERE here.
- *		You need to call it yourself for your objects
- *
- *		TODO: add general init func to do it
  */
 
 #ifndef TEMPS_USE_DS18B20
