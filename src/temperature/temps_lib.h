@@ -95,7 +95,11 @@
 	static DallasTemperature name(&(name ## _wire))
 
 
-/* alias to float, 255 mean 25.5, 777 mean 77.7, 1115 mean 111.5, etc, one sign afer dot */
+/**
+ * Alias to float, one digit after the decimal point
+ * 255 mean 25.5, 777 mean 77.7, 1115 -> 111.5
+ * maximum is 6553.6
+ */
 typedef uint16_t fl_t;
 
 
