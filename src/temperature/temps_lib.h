@@ -125,16 +125,6 @@
 	static OneWire name ##_wire((pin));			\
 	static DallasTemperature name(&(name ## _wire))
 
-/*
- * Register new array of 'struct temp_sensors'
- * Call once for all of your sensors
- *
- * @name - name for new array
- * @count - count of items in array
- */
-#define TEMPS_REGISTER_ARR(name, count)				\
-	static struct temp_sensor (name)[(count)]
-
 
 /* alias to float, 255 mean 25.5, 777 mean 77.7, 1115 mean 111.5, etc, one sign afer dot */
 typedef uint16_t fl_t;
