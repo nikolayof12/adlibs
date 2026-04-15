@@ -146,6 +146,13 @@ struct temp_sensor {
 	bool is_enable;
 	uint32_t _read_timer;
 
+	/**
+	 * In these functions, you don't need to change the fields in the 'struct temp_sensor',
+	 * the library does it all for you. You just need to return the correct temperature
+	 * and request a new value.
+	 * The library calls them in temps_lib_refresh(), so make them as fast as possible.
+	 * And of cource, it's in your best interest for them to be 'asynchronous'.
+	 */
 	fl_t (*read_temp)(struct temp_sensor *sensor); /* func to read finished temp */
 	void (*request_temp)(struct temp_sensor *sensor); /* func to request new temp */
 };
