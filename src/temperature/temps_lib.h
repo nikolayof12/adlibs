@@ -2,8 +2,6 @@
 #define TEMPS_LIB_H
 
 #include <stdint.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
 
 /*	Overview:
  *
@@ -92,6 +90,8 @@ typedef uint16_t fl_t;
 
 
 #ifdef TEMPS_USE_DS18B20
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 #define DS18B20_MAX_TEMP 125
 #define DS18B20_MIN_TEMP -55
