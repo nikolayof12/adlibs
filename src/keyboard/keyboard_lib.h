@@ -83,22 +83,26 @@
 
 
 /*
- * Register new 'struct button' static variable to button control
+ * Register new object to button control
  * Pin are automatically set to INPUT_PULLUP
+ * Call this macro from your setup() function. Different buttons require
+ * different @name arguments.
  *
- * @name - name for new 'struct button" obj
+ * @name - just a unique string
  * @pin - pin number, where button is connected
+ * @data - field of 'struct button' type; the values of fields of this struct
+ *		will be changed
  *
  * NOTE:
  *	Here, 'button' is simply a connection from GPIO @pin to GND
  */
-#define KEYBOARDS_REGISTER_BUTTON(name, pin)				\
-	static Button (_btn_ ## name)((pin));				\
-	static struct button (name) = {					\
-		.click = NULL,						\
-		.long_click = NULL,					\
-		.obj = &(_btn_ ## name)					\
-	}
+#define KEYBOARDS_REGISTER_BUTTON(name, pin, data)			\
+	do {								\
+		static Button (_btn_ ## name)((pin));			\
+		(data).click = NULL;					\
+		(data).long_click = NULL;				\
+		(data).obj = &(_btn_ ## name);				\
+	} while (0)
 
 
 /*
